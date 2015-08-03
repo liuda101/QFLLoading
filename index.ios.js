@@ -22,10 +22,7 @@ var DEVICE_WIDTH = Dimensions.get('window').width;
 var LoadingStatus = require('./Loading/index');
 
 
-var ALL_STATUS = [{
-  title: '',
-  component: 'Status1'
-}];
+var ALL_STATUS = Object.keys(LoadingStatus);
 
 var LoadingList = React.createClass({
   getInitialState: function() {
@@ -49,7 +46,7 @@ var LoadingList = React.createClass({
   },
 
   _renderRow: function(rowData, section, row) {
-    var Status = LoadingStatus[rowData.component];
+    var Status = LoadingStatus[rowData];
     return (
       <View style={styles.row}>
         <Status style={styles.loadingStatus} />
