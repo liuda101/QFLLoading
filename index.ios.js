@@ -10,44 +10,83 @@ var {
   StyleSheet,
   Text,
   View,
+  ListView,
+  NavigatorIOS
 } = React;
+
+var Dimensions = require('Dimensions');
+
+var DEVICE_HEIGHT = Dimensions.get('window').height;
+var DEVICE_WIDTH = Dimensions.get('window').width;
+
+var LoadingStatus = require('./Loading/index');
+
+
+var ALL_STATUS = [{
+  title: '',
+  component: 'Status1'
+}];
+
+var LoadingList = React.createClass({
+  getInitialState: function() {
+    return {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      })
+    };
+  },
+  componentDidMount: function() {
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(ALL_STATUS)
+    });
+  },
+  render: function() {
+    return (
+      <ListView 
+        renderRow={this._renderRow}
+        dataSource={this.state.dataSource}/>
+    );
+  },
+
+  _renderRow: function(rowData, section, row) {
+    var Status = LoadingStatus[rowData.component];
+    return (
+      <View style={styles.row}>
+        <Status style={styles.loadingStatus} />
+      </View>
+    );
+  }
+});
 
 var QFLLoading = React.createClass({
   render: function() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
+      <NavigatorIOS
+        shadowHidden={true}
+        style={styles.container}
+        initialRoute={{
+          title: 'Loading Status',
+          component: LoadingList
+        }}/>
     );
   }
 });
 
 var styles = StyleSheet.create({
   container: {
+    flex: 1
+  },
+  row: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    paddingVertical: 20,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ccc'
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  loadingStatus: {
+    width: 50,
+    height: 50
+  }
 });
 
 AppRegistry.registerComponent('QFLLoading', () => QFLLoading);
